@@ -1,45 +1,44 @@
-# <Project Title>: <Modality & Tools> on <Dataset>
+# EEG: ERPs & Time–Frequency (EEGLAB/FieldTrip, Sternberg)
 
-### What this project asks (2–3 lines)
-A crisp statement of the scientific question and why it matters.
+**Goal:** Preprocess EEG, compute ERPs and time–frequency (TF), and test condition differences with cluster-based permutation.
+
+---
+
+## Snapshot
+- **Dataset:** EEGLAB Sternberg (multi-subject tutorial)
+- **Local subset:** <N subjects> · **Disk:** ~0.4–1 GB depending on subset
+- **Tools:** EEGLAB (preproc/ERPs), FieldTrip (TF + cluster stats)
+- **Status:** <planned / in progress / complete>
+- **Last updated:** <YYYY-MM-DD>
 
 ---
 
 ## Data
-- **Source:** <dataset name + link> · **License/DUA:** <text>
-- **Subset used:** <n subjects/sessions> · **Approx disk:** <X GB> (raw) / <Y GB> (derivatives)
-- **Layout:** BIDS (if applicable)
-
-> We **do not** commit raw data to the repository. If needed, link to the public source and keep large artifacts out of git. (GitHub looks for an entry file in `/docs` such as `index.md` when you publish Pages from that folder.)
+- **Source:** EEGLAB tutorial dataset.  
+- **What I downloaded:** list subjects/sessions.  
+- **Layout:** subject folders; note montage/reference.
 
 ---
 
 ## Pipeline (high-level)
-Preprocessing → Analysis → Statistics → QC  
-Tools: FreeSurfer / FSL / SPM + CAT12 / Brainstorm / EEGLAB / FieldTrip / BRAPH / MATLAB
-
-Confounds handled (examples): motion, age/sex, site.
+1) Filter, bad channel handling, ICA artifact removal  
+2) Epoching by condition → ERPs  
+3) TF (wavelets or multitaper)  
+4) Cluster-based permutation for condition effects
 
 ---
 
-## Results
-- 2–3 key figures (see `results/figures/`)
-- Report thresholds (e.g., FWE/FDR; cluster-permutation for M/EEG) and effect sizes.
+## Results (to be filled)
+- Figure: ERP grand-average + topomaps  
+- Figure: TF difference map with significant clusters
 
 ---
 
 ## Reproducibility
-- **Versions:** see `env/TOOL_VERSIONS.md`
-- **Steps to re-run:** bullet list of actions (no raw data)
-- **Known limits:** sample size, heterogeneity, compute
+- Versions in `env/TOOL_VERSIONS.md`.  
+- Steps: “EEGLAB preproc → ERPs → TF → FieldTrip stats → export figures.”  
+- Limitations: small sample; montage differences.
 
 ---
 
-## Cite this work
-A `CITATION.cff` is included—GitHub renders a “Cite this repository” box automatically.  
-When you cut a Release and connect to Zenodo, add the DOI badge here.
-
----
-
-### Author & links
-**Rene Andrade Rey** · 🧪 ORCID: https://orcid.org/0000-0001-5627-579X · 🌐 Google Scholar: https://scholar.google.es/citations?hl=es&user=Nl3ApFEAAAAJ
+**Author:** Rene Andrade Rey · 🧪 ORCID: https://orcid.org/0000-0001-5627-579X · 🌐 Scholar: https://scholar.google.es/citations?hl=es&user=Nl3ApFEAAAAJ
