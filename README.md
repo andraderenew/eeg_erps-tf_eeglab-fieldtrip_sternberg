@@ -1,3 +1,4 @@
+# neuro-project-template
 # EEG — ERPs & Time–Frequency (EEGLAB/FieldTrip, Sternberg)
 [![License](https://img.shields.io/github/license/<username>/eeg_erps-tf_eeglab-fieldtrip_sternberg)](LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.XXXXXXX-blue)](#cite-this-work)
