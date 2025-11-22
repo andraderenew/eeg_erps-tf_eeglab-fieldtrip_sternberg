@@ -1,11 +1,12 @@
 cff-version: 1.2.0
-title: "Neuroimaging Project"
+title: "EEG — ERPs & Time–Frequency (EEGLAB/FieldTrip, Sternberg)"
 message: "If you use this project, please cite it as below."
 type: software
 authors:
   - family-names: "Andrade Rey"
     given-names: "Rene"
     orcid: "https://orcid.org/0000-0001-5627-579X"
+abstract: "EEG preprocessing, ERPs and TF maps, cluster-based permutation statistics on the Sternberg tutorial dataset."
 license: "MIT"
-repository-code: "https://github.com/andraderenew/<repo>"
+repository-code: "https://github.com/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg"
 url: "https://scholar.google.es/citations?hl=es&user=Nl3ApFEAAAAJ"
