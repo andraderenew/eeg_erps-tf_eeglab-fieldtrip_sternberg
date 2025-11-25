@@ -10,3 +10,5 @@ abstract: "EEG preprocessing, ERPs and TF maps, cluster-based permutation statis
 license: "MIT"
 repository-code: "https://github.com/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg"
 url: "https://scholar.google.es/citations?hl=es&user=Nl3ApFEAAAAJ"
+
+doi: "10.5281/zenodo.17715111"

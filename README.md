@@ -1,6 +1,6 @@
 # EEG — ERPs & Time–Frequency (EEGLAB/FieldTrip, Sternberg)
 [![License](https://img.shields.io/github/license/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg)](LICENSE)
-[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.XXXXXXX-blue)](#cite-this-work)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.17715111-blue)](https://doi.org/10.5281/zenodo.17715111)
 [![Pages](https://img.shields.io/website?url=https%3A%2F%2Fandraderenew.github.io%2Feeg_erps-tf_eeglab-fieldtrip_sternberg%2F)](https://andraderenew.github.io/eeg_erps-tf_eeglab-fieldtrip_sternberg/)
 ![Release](https://img.shields.io/github/v/release/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg?include_prereleases)
 ![Last commit](https://img.shields.io/github/last-commit/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg)
