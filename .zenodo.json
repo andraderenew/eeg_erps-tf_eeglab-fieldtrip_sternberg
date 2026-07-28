@@ -7,9 +7,12 @@
     }
   ],
   "title": "EEG — ERPs and time-frequency analysis with EEGLAB and FieldTrip",
-  "description": "Portfolio scaffold for EEG preprocessing, event-related potentials, time-frequency analysis, and cluster-based permutation testing using EEGLAB and FieldTrip with a Sternberg-task workflow. The repository currently describes a planned analysis and does not claim completed results.",
+  "description": "Portfolio scaffold for EEG preprocessing, event-related potentials, time-frequency analysis, and cluster-based permutation testing using EEGLAB and FieldTrip with a Sternberg-task workflow. The repository describes a planned analysis and does not claim completed results.",
   "version": "0.1.1",
+  "upload_type": "software",
   "access_right": "open",
+  "license": "mit",
+  "language": "eng",
   "keywords": [
     "EEG",
     "EEGLAB",
@@ -19,9 +22,6 @@
     "Sternberg task",
     "neuroimaging"
   ],
-  "license": "mit",
-  "upload_type": "software",
-  "language": "eng",
   "notes": "Portfolio scaffold. The archived repository documents a planned workflow and does not claim completed scientific results.",
   "related_identifiers": [
     {

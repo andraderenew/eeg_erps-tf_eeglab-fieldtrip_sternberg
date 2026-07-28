@@ -1,12 +1,12 @@
 cff-version: 1.2.0
 title: "EEG — ERPs and time-frequency analysis with EEGLAB and FieldTrip"
-message: "If you use this project, please cite it as below."
+message: "Please cite this software using the metadata below."
 type: software
 authors:
   - family-names: "Andrade Rey"
     given-names: "Rene"
     orcid: "https://orcid.org/0000-0001-5627-579X"
-abstract: "Portfolio scaffold for EEG preprocessing, event-related potentials, time-frequency analysis, and cluster-based permutation testing using EEGLAB and FieldTrip with a Sternberg-task workflow. The repository currently describes a planned analysis and does not claim completed results."
+abstract: "Portfolio scaffold for EEG preprocessing, event-related potentials, time-frequency analysis, and cluster-based permutation testing using EEGLAB and FieldTrip with a Sternberg-task workflow. The repository describes a planned analysis and does not claim completed results."
 license: "MIT"
 repository-code: "https://github.com/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg"
 url: "https://github.com/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg"
