@@ -12,6 +12,7 @@ repository-code: "https://github.com/andraderenew/eeg_erps-tf_eeglab-fieldtrip_s
 url: "https://github.com/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg"
 version: "0.1.1"
 date-released: "2026-07-28"
+doi: "10.5281/zenodo.21650530"
 keywords:
   - "EEG"
   - "EEGLAB"
