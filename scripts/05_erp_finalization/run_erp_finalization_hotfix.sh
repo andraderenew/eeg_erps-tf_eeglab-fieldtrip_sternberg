@@ -4,7 +4,7 @@ set -euo pipefail
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 CONFIG_FILE="$REPO_ROOT/scripts/config.sh"
 MATLAB_BIN="${MATLAB_BIN:-matlab}"
-MATLAB_SCRIPT="$REPO_ROOT/scripts/05_erp_finalization/05_run_stern_erp_finalization.m"
+MATLAB_SOURCE="$REPO_ROOT/scripts/05_erp_finalization/05_run_stern_erp_finalization.m"
 
 if [[ ! -f "$CONFIG_FILE" ]]; then
     echo "ERROR: missing $CONFIG_FILE"
@@ -33,6 +33,11 @@ if ! command -v "$MATLAB_BIN" >/dev/null 2>&1; then
     exit 1
 fi
 
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "ERROR: python3 is required for the strict ASCII source check."
+    exit 1
+fi
+
 required_inputs=(
     "$STERN_RESULTS_DIR/mat/stern_all_channel_subject_erp.mat"
     "$STERN_RESULTS_DIR/mat/stern_erp_cluster_Memorize_minus_Ignore.mat"
@@ -54,17 +59,111 @@ if [[ "$missing" -ne 0 ]]; then
     echo
     echo "ERROR: required local ERP inputs are missing."
     echo "Do not publish or regenerate a release."
-    echo "Rerun scripts 02–04 as needed, then execute this validation again."
+    echo "Rerun scripts 02-04 as needed, then execute this validation again."
     exit 1
 fi
 
 mkdir -p "$STERN_RESULTS_DIR/logs"
 timestamp="$(date +%Y%m%d_%H%M%S)"
 log_file="$STERN_RESULTS_DIR/logs/erp_finalization_hotfix_${timestamp}.log"
+ascii_script="$STERN_RESULTS_DIR/logs/05_run_stern_erp_finalization_ascii_${timestamp}.m"
+ascii_audit="$STERN_RESULTS_DIR/logs/erp_finalization_ascii_audit_${timestamp}.txt"
 
-matlab_script_escaped="${MATLAB_SCRIPT//\'/\'\'}"
+# MATLAB installations can reject otherwise valid UTF-8 source when a script
+# contains an invisible non-ASCII character. Build an auditable strict-ASCII
+# execution copy. Numeric data and paths are not transformed.
+python3 - "$MATLAB_SOURCE" "$ascii_script" "$ascii_audit" <<'PY'
+from __future__ import annotations
+
+import pathlib
+import sys
+import unicodedata
+
+source_path = pathlib.Path(sys.argv[1])
+out_path = pathlib.Path(sys.argv[2])
+audit_path = pathlib.Path(sys.argv[3])
+
+text = source_path.read_text(encoding="utf-8-sig")
+
+replacements = {
+    "\u00a0": " ",
+    "\u00b5": "u",
+    "\u00d7": "x",
+    "\u2010": "-",
+    "\u2011": "-",
+    "\u2012": "-",
+    "\u2013": "-",
+    "\u2014": "-",
+    "\u2018": "'",
+    "\u2019": "'",
+    "\u201c": '"',
+    "\u201d": '"',
+    "\u2026": "...",
+    "\u2212": "-",
+}
+
+changes: list[str] = []
+normalized_parts: list[str] = []
+
+for index, char in enumerate(text):
+    if ord(char) < 128:
+        normalized_parts.append(char)
+        continue
+
+    replacement = replacements.get(char)
+    if replacement is None:
+        replacement = unicodedata.normalize("NFKD", char).encode(
+            "ascii", "ignore"
+        ).decode("ascii")
+
+    line = text.count("\n", 0, index) + 1
+    column = index - text.rfind("\n", 0, index)
+    changes.append(
+        f"line={line} column={column} "
+        f"codepoint=U+{ord(char):04X} replacement={replacement!r}"
+    )
+    normalized_parts.append(replacement)
+
+ascii_text = "".join(normalized_parts)
+
+try:
+    ascii_bytes = ascii_text.encode("ascii", "strict")
+except UnicodeEncodeError as exc:
+    raise SystemExit(f"ASCII conversion failed: {exc}") from exc
+
+out_path.write_bytes(ascii_bytes)
+
+audit_lines = [
+    f"source={source_path}",
+    f"ascii_copy={out_path}",
+    f"source_characters={len(text)}",
+    f"ascii_bytes={len(ascii_bytes)}",
+    f"non_ascii_replacements={len(changes)}",
+]
+audit_lines.extend(changes)
+audit_path.write_text("\n".join(audit_lines) + "\n", encoding="ascii")
+
+print(f"ASCII_SCRIPT={out_path}")
+print(f"ASCII_AUDIT={audit_path}")
+print(f"NON_ASCII_REPLACEMENTS={len(changes)}")
+PY
+
+if [[ ! -s "$ascii_script" ]]; then
+    echo "ERROR: strict ASCII MATLAB copy was not created."
+    exit 1
+fi
+
+if LC_ALL=C grep -n '[^ -~	]' "$ascii_script" >/dev/null 2>&1; then
+    echo "ERROR: non-ASCII bytes remain in $ascii_script"
+    exit 1
+fi
+
+matlab_script_escaped="${ascii_script//\'/\'\'}"
 
 echo "Running renderer-safe ERP finalization..."
+echo "MATLAB source: $MATLAB_SOURCE"
+echo "Strict ASCII execution copy: $ascii_script"
+echo "ASCII audit: $ascii_audit"
 echo "Log: $log_file"
 
 set +e
@@ -78,6 +177,7 @@ if [[ "$matlab_status" -ne 0 ]]; then
     echo
     echo "ERROR: MATLAB validation or export failed."
     echo "Nothing should be committed. Inspect: $log_file"
+    echo "ASCII audit: $ascii_audit"
     exit "$matlab_status"
 fi
 
