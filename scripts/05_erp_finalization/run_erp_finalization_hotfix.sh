@@ -56,7 +56,7 @@ fi
 mkdir -p "$STERN_RESULTS_DIR/logs"
 timestamp="$(date +%Y%m%d_%H%M%S)"
 log_file="$STERN_RESULTS_DIR/logs/erp_finalization_hotfix_${timestamp}.log"
-ascii_script="$STERN_RESULTS_DIR/logs/05_run_stern_erp_finalization_ascii_${timestamp}.m"
+ascii_script="$STERN_RESULTS_DIR/logs/run_stern_erp_finalization_ascii_${timestamp}.m"
 ascii_audit="$STERN_RESULTS_DIR/logs/erp_finalization_ascii_audit_${timestamp}.txt"
 preflight_script="$STERN_RESULTS_DIR/logs/matlab_ascii_preflight_${timestamp}.m"
 
