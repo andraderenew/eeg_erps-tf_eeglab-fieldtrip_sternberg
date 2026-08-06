@@ -1,0 +1,39 @@
+=== STERN SECONDARY TASK-PHASE TF CLUSTER SUMMARY ===
+Subjects: 13
+Channels: 69 scalp EEG channels
+Frequency range: 4 to 30 Hz
+Time range: 0 to 1.4 s
+Input scale: dB
+Test: dependent-samples t
+Correction: channel x frequency x time cluster permutation
+Randomization: all possible within-subject permutations
+Exact permutation reference: 8192
+Within-contrast corrected alpha: 0.05
+Additional conservative alpha across two secondary contrasts: 0.025
+
+Interpretation constraint:
+Probe is aligned to probe events and includes later response and correctness markers. Probe contrasts are task-phase comparisons, not pure encoding-condition effects.
+
+Probe - Memorize
+Clusters formed: 14
+Significant at corrected p < 0.05: 1
+Significant at p < 0.025: 1
+Representative channel: CP4
+Representative frequency: 10.000000 Hz
+Representative time: 0.640000 s
+Best corrected cluster: negative cluster 1, p=0.000000
+
+Probe - Ignore
+Clusters formed: 16
+Significant at corrected p < 0.05: 1
+Significant at p < 0.025: 1
+Representative channel: TP7
+Representative frequency: 10.000000 Hz
+Representative time: 0.480000 s
+Best corrected cluster: negative cluster 1, p=0.000000
+
+Outputs:
+Cluster table: <STERN_PROJECT>/results/tables/stern_tf_secondary_phase_cluster_results.tsv
+Sensor-average figure: <STERN_PROJECT>/results/figures/stern_tf_secondary_phase_sensor_average.png
+Representative-channel figure: <STERN_PROJECT>/results/figures/stern_tf_secondary_phase_representative_channels.png
+Topography figure: <STERN_PROJECT>/results/figures/stern_tf_secondary_phase_topographies.png

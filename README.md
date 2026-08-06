@@ -1,31 +1,86 @@
-# EEG — ERPs & Time–Frequency (EEGLAB/FieldTrip, Sternberg)
+# EEG ERPs and time-frequency analysis — Sternberg task
+
 [![License](https://img.shields.io/github/license/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg)](LICENSE)
-[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.17715111-blue)](https://doi.org/10.5281/zenodo.17715111)
-[![Pages](https://img.shields.io/website?url=https%3A%2F%2Fandraderenew.github.io%2Feeg_erps-tf_eeglab-fieldtrip_sternberg%2F)](https://andraderenew.github.io/eeg_erps-tf_eeglab-fieldtrip_sternberg/)
-![Release](https://img.shields.io/github/v/release/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg?include_prereleases)
+[![Release](https://img.shields.io/github/v/release/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg?include_prereleases)](https://github.com/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg/releases)
 ![Last commit](https://img.shields.io/github/last-commit/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg)
 [![ORCID](https://img.shields.io/badge/ORCID-0000--0001--5627--579X-A6CE39)](https://orcid.org/0000-0001-5627-579X)
-[![Google Scholar](https://img.shields.io/badge/Google%20Scholar-Profile-4285F4)](https://scholar.google.es/citations?hl=es&user=Nl3ApFEAAAAJ)
 
-**One-line:** Preprocess EEG, compute ERPs and TF maps, and test condition effects with cluster-based permutation.
+A reproducible group-level EEG analysis of the EEGLAB STERN tutorial study,
+combining event-related potentials, time-frequency power, and paired
+cluster-based permutation statistics.
 
-## Overview
-Preprocess **EEG** with **EEGLAB**, compute **ERPs** and **time-frequency** in **FieldTrip**, and test condition effects via **cluster-based permutation** (Sternberg tutorial).
+## Study and data
 
-## Data & subset
-See `DATA_SOURCES.md`. Suggested: <5 subjects> to start (~0.4–1.0 GB).
+- 13 participants and 39 condition-specific EEGLAB datasets.
+- Conditions: `Ignore`, `Memorize`, and `Probe`.
+- 9,678 epochs and 20,697 events.
+- 125 Hz sampling, 3-second epochs from −1.000 to 1.992 s.
+- 69 common scalp EEG channels; `LEYE` and `REYE` were excluded.
+- Raw EEG is not redistributed.
 
-## Pipeline
-Filter + bad channels + ICA → epoching → ERPs → TF (wavelets/multitaper) → cluster permutation (conditions).
+## Analysis
 
-## Results (to be filled)
-- ERP grand average + topographies  
-- TF difference map with significant clusters
+ERPs were baseline-corrected from −200 to 0 ms. Time-frequency power used
+FieldTrip `mtmconvol`, a Hanning taper, four-cycle windows, 4–30 Hz, and dB
+normalization to −0.48 to −0.16 s. Paired cluster tests used all 8,192 possible
+within-subject permutations.
 
-## Reproducibility
-- Versions: see `env/TOOL_VERSIONS.md`  
-- Steps: “EEGLAB preproc → ERPs → TF → FieldTrip stats → figures.”  
-- Limits: small sample; montage differences
+`Memorize − Ignore` is the primary event-matched letter-onset comparison.
+Probe contrasts are secondary task-phase comparisons.
 
-## Cite this work
-See `CITATION.cff` (add DOI after first Release).
+## Primary ERP: Memorize − Ignore
+
+- Positive cluster, 440–552 ms, 50 channels, corrected p = 0.015869.
+- Negative cluster, 632–760 ms, 66 channels, corrected p = 0.000366.
+
+![Grand-average ERP at Oz](results/figures/stern_grand_average_erp_OZ_final.png)
+
+## Primary time-frequency: Memorize − Ignore
+
+- Negative cluster, 4–26 Hz and 0.00–1.40 s, 69 channels, corrected p = 0.000610.
+
+![Primary time-frequency contrast](results/figures/stern_tf_Memorize_minus_Ignore_sensor_average.png)
+
+## Secondary task-phase contrasts
+
+**Probe − Memorize**
+
+- Negative cluster, 6–30 Hz and 0.00–1.40 s, 69 channels, corrected p < 0.000122.
+
+**Probe − Ignore**
+
+- Negative cluster, 6–30 Hz and 0.00–1.40 s, 69 channels, corrected p < 0.000122.
+
+These secondary effects should not be interpreted as pure encoding effects.
+
+## Quality control
+
+- ERP array: `3 × 13 × 69 × 151`, with no non-finite values.
+- Time-frequency array: `3 × 13 × 69 × 14 × 50`, with no non-finite values.
+- Six statistical result structures passed final validation.
+- Primary TF robustness was examined by subject and leave-one-subject-out QC.
+
+## Repository structure
+
+```text
+scripts/                 final portable MATLAB scripts
+results/figures/         final PNG figures
+results/tables/          compact TSV tables
+results/summaries/       validation summaries
+reports/report.md        scientific report
+DATA_SOURCES.md          provenance and reuse notes
+env/TOOL_VERSIONS.md     validated environment
+```
+
+## Limitations
+
+The tutorial dataset contains 13 participants. Cluster inference applies to
+connected sample sets, not each sample independently. Probe contrasts combine
+task phase and event type. Behavioral covariates were not modeled. Raw EEG is
+excluded because no clear standalone redistribution license was identified in
+the material reviewed.
+
+## Citation
+
+Use [`CITATION.cff`](CITATION.cff). A DOI badge will be added only after the
+completed release and Zenodo record have been verified.

@@ -1,0 +1,35 @@
+=== STERN PRIMARY TF CLUSTER STATISTICS SUMMARY ===
+Contrast: Memorize - Ignore
+Interpretation: primary event-matched letter-onset contrast
+Subjects: 13
+Channels: 69 scalp EEG channels
+Frequency range: 4 to 30 Hz
+Time range: 0 to 1.4 s
+Input scale: dB relative to the Stage 1 baseline
+Test: dependent-samples t
+Correction: channel x frequency x time cluster permutation
+Cluster-forming alpha: 0.05
+Cluster statistic: maxsum
+Minimum neighbouring channels: 2
+Test: two-sided
+Corrected alpha: 0.05
+Randomization: all possible within-subject permutations
+Exact permutation count reference: 8192
+Minimum reportable non-zero exact p: 0.000122070
+Neighbour graph: symmetric 4-nearest channels
+Neighbour degree min/median/max: 4 / 4.0 / 6
+Clusters formed: 17
+Significant corrected clusters: 1
+Representative channel: CP3
+Representative peak frequency: 8.000000 Hz
+Representative peak time: 0.400000 s
+Representative selection: peak inside corrected cluster
+Cluster table: <STERN_PROJECT>/results/tables/stern_tf_cluster_Memorize_minus_Ignore.tsv
+Statistical MAT: <STERN_PROJECT>/results/mat/stern_tf_cluster_Memorize_minus_Ignore.mat
+Sensor-average difference figure: <STERN_PROJECT>/results/figures/stern_tf_Memorize_minus_Ignore_sensor_average.png
+Significant-channel count figure: <STERN_PROJECT>/results/figures/stern_tf_Memorize_minus_Ignore_significant_channel_count.png
+Representative channel figure: <STERN_PROJECT>/results/figures/stern_tf_Memorize_minus_Ignore_representative_channel.png
+Cluster topography: <STERN_PROJECT>/results/figures/stern_tf_Memorize_minus_Ignore_cluster_topography.png
+
+Interpretation note:
+A significant cluster supports a condition difference over a connected channel-frequency-time set. It does not make each sample inside the cluster independently significant.

@@ -1,0 +1,27 @@
+=== STERN TIME-FREQUENCY STAGE 1 SUMMARY ===
+EEGLAB version: 2025.1.0
+MATLAB version: 25.2.0.2998904 (R2025b)
+FieldTrip directory: <HOME>/.brainstorm/plugins/fieldtrip/fieldtrip-20251218
+Subjects: 13
+Conditions: Ignore, Memorize, Probe
+Scalp EEG channels: 69
+Eye channels excluded: LEYE, REYE
+Frequency method: mtmconvol with Hanning taper
+Frequencies: [4 6 8 10 12 14 16 18 20 22 24 26 28 30] Hz
+Cycles per frequency: 4
+Times: -0.48 to 1.48 s in 0.04 s steps
+Baseline: -0.48 to -0.16 s
+Baseline type: dB
+TFR array order: condition x subject x channel x frequency x time
+TFR array size: [3 13 69 14 50]
+TFR non-finite count: 0
+Total trials represented: 9678
+Total rejected ICA components removed: 252
+Datasets with interpolated scalp channels: 3
+Subject-level TFR: <STERN_PROJECT>/results/mat/stern_subject_level_tfr_db.mat
+Dataset QC table: <STERN_PROJECT>/results/tables/stern_tf_dataset_qc.tsv
+Band/window table: <STERN_PROJECT>/results/tables/stern_tf_band_window_subject_summary.tsv
+QC figure: <STERN_PROJECT>/results/figures/stern_tf_stage1_sensor_average_qc.png
+
+Interpretation constraint:
+Memorize - Ignore is the primary event-matched letter-onset contrast. Probe comparisons are treated as task-phase contrasts.

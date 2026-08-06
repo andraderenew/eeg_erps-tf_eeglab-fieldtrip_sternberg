@@ -42,3 +42,12 @@ bids/
 derivatives/
 results/raw_exports/
 reports/tmp/
+raw/
+work/
+logs/
+*.study
+*.daterp
+*.dattimef
+results/mat/
+release_staging/
+scripts/config.sh

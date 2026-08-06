@@ -6,9 +6,9 @@
       "type": "ProjectMember"
     }
   ],
-  "title": "EEG — ERPs and time-frequency analysis with EEGLAB and FieldTrip",
-  "description": "Portfolio scaffold for EEG preprocessing, event-related potentials, time-frequency analysis, and cluster-based permutation testing using EEGLAB and FieldTrip with a Sternberg-task workflow. The repository describes a planned analysis and does not claim completed results.",
-  "version": "0.1.1",
+  "title": "EEG ERPs and time-frequency analysis with EEGLAB and FieldTrip",
+  "description": "Completed reproducible group-level analysis of the 13-subject EEGLAB STERN tutorial study, including ERP and time-frequency estimation, quality control, and paired cluster-based permutation statistics.",
+  "version": "1.0.0",
   "upload_type": "software",
   "access_right": "open",
   "license": "mit",
@@ -19,10 +19,10 @@
     "FieldTrip",
     "ERP",
     "time-frequency analysis",
-    "Sternberg task",
-    "neuroimaging"
+    "cluster-based permutation",
+    "Sternberg task"
   ],
-  "notes": "Portfolio scaffold. The archived repository documents a planned workflow and does not claim completed scientific results.",
+  "notes": "Raw EEG is not redistributed. The archive contains code, compact derived results, figures, and validation summaries.",
   "related_identifiers": [
     {
       "identifier": "https://github.com/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg",

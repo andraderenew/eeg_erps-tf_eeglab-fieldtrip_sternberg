@@ -1,0 +1,42 @@
+=== STERN ERP CLUSTER STATISTICS SUMMARY ===
+FieldTrip directory: <HOME>/.brainstorm/plugins/fieldtrip/fieldtrip-20251218
+Subjects: 13
+Conditions: Ignore, Memorize, Probe
+Channels: 69 scalp EEG channels
+Statistical interval: 0 to 1000 ms
+Test: dependent-samples t
+Correction: channel x time cluster-based permutation
+Cluster-forming alpha: 0.05
+Cluster statistic: maxsum
+Minimum neighbouring channels: 2
+Test tails: two-sided
+Corrected alpha: 0.05 using correcttail=alpha
+Randomization: all possible within-subject sign permutations
+Probability handling: FieldTrip Monte Carlo layer; statfun-level computeprob left at default no
+Neighbour definition: symmetric 4-nearest graph
+Neighbour degree min/median/max: 4 / 4.0 / 6
+
+Memorize − Ignore
+Positive cluster p-values: 0.015869, 0.017700, 0.781494, 0.946655, 0.958252, 0.985352, 0.985840
+Negative cluster p-values: 0.000366, 0.031006, 0.039307, 0.262207, 0.934814, 0.972900, 0.981323, 0.995605, 0.996094, 0.996948
+Significant corrected clusters: 5
+
+Probe − Memorize
+Positive cluster p-values: 0.000000, 0.193359, 0.703491, 0.980469
+Negative cluster p-values: 0.001587, 0.020996, 0.187378, 0.291138, 0.358276, 0.634644, 0.695801, 0.929321, 0.943726, 0.958374, 0.980347
+Significant corrected clusters: 3
+
+Probe − Ignore
+Positive cluster p-values: 0.000000, 0.784912, 0.808350
+Negative cluster p-values: 0.008667, 0.012817, 0.013306, 0.465698, 0.601440, 0.800903, 0.806885, 0.931763, 0.940796, 0.968750
+Significant corrected clusters: 4
+
+Interpretation note:
+A significant cluster supports a condition difference over a connected set of channel-time samples. It does not justify assigning the effect to every individual channel or time point inside the cluster.
+
+Outputs:
+Cluster table: <STERN_PROJECT>/results/tables/stern_erp_cluster_results.tsv
+Neighbour table: <STERN_PROJECT>/results/tables/stern_channel_neighbours.tsv
+Neighbour figure: <STERN_PROJECT>/results/figures/stern_channel_neighbours.png
+Cluster t-map figure: <STERN_PROJECT>/results/figures/stern_erp_cluster_tmaps.png
+Representative waveforms: <STERN_PROJECT>/results/figures/stern_erp_cluster_representative_waveforms.png

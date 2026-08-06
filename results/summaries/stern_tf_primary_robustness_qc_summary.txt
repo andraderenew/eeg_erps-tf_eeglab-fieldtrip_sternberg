@@ -1,0 +1,36 @@
+=== STERN PRIMARY TF ROBUSTNESS QC SUMMARY ===
+Contrast: Memorize - Ignore
+Corrected significant clusters: 1
+Cluster sign: negative
+Cluster corrected p: 0.000610351562
+Cluster time extent: 0.000 to 1.400 s
+Cluster frequency extent: 4.000 to 26.000 Hz
+Cluster channels: 69 of 69
+Cluster samples: 6835
+
+Subject-level cluster mean:
+Mean: -0.629164817 dB
+SD: 0.349406987 dB
+Median: -0.721517265 dB
+t(12): -6.492388797
+Parametric paired-effect p: 0.000029694655
+Cohen dz: -1.800664670
+Subjects negative: 12
+Subjects positive: 1
+Subjects zero: 0
+Exact two-sided sign-test p: 0.003417968750
+
+Leave-one-subject-out group means:
+Minimum: -0.686772114 dB
+Maximum: -0.584863407 dB
+Maximum absolute mean change: 0.057607297 dB
+
+Outputs:
+Subject table: <STERN_PROJECT>/results/tables/stern_tf_primary_cluster_subject_effects.tsv
+Band/window table: <STERN_PROJECT>/results/tables/stern_tf_primary_band_window_subject_effects.tsv
+Subject effect figure: <STERN_PROJECT>/results/figures/stern_tf_primary_cluster_subject_effects.png
+Subject TFR panels: <STERN_PROJECT>/results/figures/stern_tf_primary_subject_sensor_average_panels.png
+Band/window figure: <STERN_PROJECT>/results/figures/stern_tf_primary_band_window_robustness.png
+
+Interpretation rule:
+This QC tests whether the corrected cluster is broadly consistent across subjects and descriptive subregions. It does not replace the cluster-permutation inference.

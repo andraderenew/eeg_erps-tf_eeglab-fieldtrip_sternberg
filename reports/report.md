@@ -1,27 +1,48 @@
-# Mini-Report
+# Scientific report
 
 ## Aim
-<2–3 lines: what you test and why it matters.>
+
+To characterize condition-related ERP and oscillatory-power changes in the
+EEGLAB STERN task using paired cluster-based permutation tests.
 
 ## Data
-Dataset: <name + link> · Subset: <N> · Disk: raw ~<X> GB, derivatives ~<Y> GB.
+
+The analysis used 13 participants, 39 datasets, 9,678 epochs, 20,697 events,
+69 scalp channels, and 125-Hz sampling.
 
 ## Methods
-Tools: <SPM/CAT12/FS/FSL/EEGLAB/FieldTrip/Brainstorm/BRAPH/MATLAB>.
-Pipeline:
-- <step 1>
-- <step 2>
-- <step 3>
 
-## Results
-- Fig 1: <what it shows> (see `results/figures/fig1.png`)
-- Table 1: <optional> (see `results/tables/table1.csv`)
+Pre-marked ICA components were removed and missing channels were interpolated.
+ERPs used a −200 to 0 ms baseline. Time-frequency power used four-cycle
+Hanning-window convolution from 4–30 Hz and a −0.48 to −0.16 s dB baseline.
+All 8,192 paired permutations were evaluated.
 
-## QC
-<motion/outliers/surface failures/bad channels/etc.>
+## Primary ERP result
+
+- Positive cluster, 440–552 ms, 50 channels, corrected p = 0.015869.
+- Negative cluster, 632–760 ms, 66 channels, corrected p = 0.000366.
+
+## Primary time-frequency result
+
+- Negative cluster, 4–26 Hz and 0.00–1.40 s, 69 channels, corrected p = 0.000610.
+
+## Interpretation
+
+`Memorize − Ignore` is the primary event-matched letter-onset contrast. Probe
+comparisons are secondary task-phase contrasts.
+
+## Quality control
+
+Final ERP and TF arrays contained no non-finite values. Six statistical
+structures and the required public outputs passed final validation.
 
 ## Limitations
-<sample size / heterogeneity / thresholds / compute>
+
+The sample contains 13 participants. Cluster inference is cluster-level rather
+than sample-level. Probe contrasts mix task phase and event type. Raw EEG is
+not redistributed.
 
 ## Reproducibility
-Tool versions: `env/TOOL_VERSIONS.md` · Steps: `README.md`
+
+See `scripts/`, `env/TOOL_VERSIONS.md`, `DATA_SOURCES.md`, and
+`results/summaries/stern_final_validation.txt`.

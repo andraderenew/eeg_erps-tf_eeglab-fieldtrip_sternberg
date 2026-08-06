@@ -1,0 +1,19 @@
+=== STERN FINAL SCIENTIFIC VALIDATION ===
+ERP array size: [3 13 69 151]
+ERP non-finite values: 0
+TF array size: [3 13 69 14 50]
+TF non-finite values: 0
+Statistical MAT files validated: 6
+Required final tables validated: 5
+Required final figures validated: 15
+ERP corrected significant clusters: 12
+Primary TF corrected significant clusters: 1
+Secondary TF corrected significant clusters: 2
+Primary TF subject-effect rows: 13
+
+Interpretation constraints:
+Memorize - Ignore is the primary event-matched letter-onset comparison.
+Probe comparisons are secondary task-phase contrasts and are not pure encoding contrasts.
+Cluster significance applies to connected sample sets, not to each sample independently.
+
+VALIDATION PASSED

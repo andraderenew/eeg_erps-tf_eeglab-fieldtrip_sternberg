@@ -1,22 +1,12 @@
-# Tool Versions
+# Validated tool versions
 
-## System
-OS: <your OS>  # e.g., Ubuntu LTS / macOS / Windows 11 (WSL2)
+- Operating system: Ubuntu 22.04.5 LTS
+- MATLAB: R2025b (`25.2.0.2998904`)
+- EEGLAB: `2025.1.0`
+- FieldTrip: `20251218`
+- Sampling rate: 125 Hz
+- ERP baseline: −200 to 0 ms
+- TF baseline: −0.48 to −0.16 s
+- Exact paired permutation space: 8,192
 
-## MATLAB & Toolboxes
-MATLAB: R2025b
-SPM: 25.01.02
-CAT12: 12.9
-EEGLAB: 2025.1.0
-FieldTrip: 20250928
-Brainstorm: self-updating (current build; check Help → Update Brainstorm)
-BRAPH: 2.0.1
-
-## MRI/FMRI
-FreeSurfer: 8.1.0
-FSL: 6.0.7.19 (FEAT/MELODIC/FDT)
-
-## PET
-PETPVE12 (SPM): 1.0
-
-Last verified: 2025-11-22
+Last validated: 2026-08-06
