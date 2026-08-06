@@ -8,19 +8,13 @@ MATLAB_SOURCE="$REPO_ROOT/scripts/05_erp_finalization/05_run_stern_erp_finalizat
 
 if [[ ! -f "$CONFIG_FILE" ]]; then
     echo "ERROR: missing $CONFIG_FILE"
-    echo "Copy scripts/config.example.sh to scripts/config.sh and set the local paths."
     exit 1
 fi
 
 # shellcheck disable=SC1090
 source "$CONFIG_FILE"
 
-required_vars=(
-    STERN_PROJECT
-    STERN_RESULTS_DIR
-)
-
-for var_name in "${required_vars[@]}"; do
+for var_name in STERN_PROJECT STERN_RESULTS_DIR; do
     if [[ -z "${!var_name:-}" ]]; then
         echo "ERROR: $var_name is not defined after sourcing $CONFIG_FILE"
         exit 1
@@ -29,12 +23,11 @@ done
 
 if ! command -v "$MATLAB_BIN" >/dev/null 2>&1; then
     echo "ERROR: MATLAB command not found: $MATLAB_BIN"
-    echo "Set MATLAB_BIN to the full MATLAB executable path if necessary."
     exit 1
 fi
 
 if ! command -v python3 >/dev/null 2>&1; then
-    echo "ERROR: python3 is required for the strict ASCII source check."
+    echo "ERROR: python3 is required for source validation."
     exit 1
 fi
 
@@ -56,10 +49,7 @@ for input_path in "${required_inputs[@]}"; do
 done
 
 if [[ "$missing" -ne 0 ]]; then
-    echo
     echo "ERROR: required local ERP inputs are missing."
-    echo "Do not publish or regenerate a release."
-    echo "Rerun scripts 02-04 as needed, then execute this validation again."
     exit 1
 fi
 
@@ -68,10 +58,8 @@ timestamp="$(date +%Y%m%d_%H%M%S)"
 log_file="$STERN_RESULTS_DIR/logs/erp_finalization_hotfix_${timestamp}.log"
 ascii_script="$STERN_RESULTS_DIR/logs/05_run_stern_erp_finalization_ascii_${timestamp}.m"
 ascii_audit="$STERN_RESULTS_DIR/logs/erp_finalization_ascii_audit_${timestamp}.txt"
+preflight_script="$STERN_RESULTS_DIR/logs/matlab_ascii_preflight_${timestamp}.m"
 
-# MATLAB installations can reject otherwise valid UTF-8 source when a script
-# contains an invisible non-ASCII character. Build an auditable strict-ASCII
-# execution copy. Numeric data and paths are not transformed.
 python3 - "$MATLAB_SOURCE" "$ascii_script" "$ascii_audit" <<'PY'
 from __future__ import annotations
 
@@ -83,9 +71,11 @@ source_path = pathlib.Path(sys.argv[1])
 out_path = pathlib.Path(sys.argv[2])
 audit_path = pathlib.Path(sys.argv[3])
 
-text = source_path.read_text(encoding="utf-8-sig")
+raw = source_path.read_bytes()
+text = raw.decode("utf-8-sig", errors="strict")
+text = text.replace("\r\n", "\n").replace("\r", "\n")
 
-replacements = {
+unicode_replacements = {
     "\u00a0": " ",
     "\u00b5": "u",
     "\u00d7": "x",
@@ -103,59 +93,84 @@ replacements = {
 }
 
 changes: list[str] = []
-normalized_parts: list[str] = []
+out: list[str] = []
 
 for index, char in enumerate(text):
-    if ord(char) < 128:
-        normalized_parts.append(char)
+    code = ord(char)
+    line = text.count("\n", 0, index) + 1
+    column = index - text.rfind("\n", 0, index)
+
+    if char in ("\n", "\t"):
+        out.append(char)
         continue
 
-    replacement = replacements.get(char)
+    if 32 <= code <= 126:
+        out.append(char)
+        continue
+
+    if code < 32 or code == 127:
+        changes.append(
+            f"line={line} column={column} codepoint=U+{code:04X} "
+            "kind=control replacement=''"
+        )
+        continue
+
+    replacement = unicode_replacements.get(char)
     if replacement is None:
         replacement = unicodedata.normalize("NFKD", char).encode(
             "ascii", "ignore"
         ).decode("ascii")
 
-    line = text.count("\n", 0, index) + 1
-    column = index - text.rfind("\n", 0, index)
     changes.append(
-        f"line={line} column={column} "
-        f"codepoint=U+{ord(char):04X} replacement={replacement!r}"
+        f"line={line} column={column} codepoint=U+{code:04X} "
+        f"kind=unicode replacement={replacement!r}"
     )
-    normalized_parts.append(replacement)
+    out.append(replacement)
 
-ascii_text = "".join(normalized_parts)
+ascii_text = "".join(out)
+ascii_bytes = ascii_text.encode("ascii", errors="strict")
 
-try:
-    ascii_bytes = ascii_text.encode("ascii", "strict")
-except UnicodeEncodeError as exc:
-    raise SystemExit(f"ASCII conversion failed: {exc}") from exc
+allowed = set(range(32, 127)) | {9, 10}
+invalid = [(i, byte) for i, byte in enumerate(ascii_bytes) if byte not in allowed]
+if invalid:
+    raise SystemExit(f"Disallowed bytes remain: {invalid[:20]}")
 
 out_path.write_bytes(ascii_bytes)
 
 audit_lines = [
     f"source={source_path}",
     f"ascii_copy={out_path}",
-    f"source_characters={len(text)}",
+    f"source_bytes={len(raw)}",
     f"ascii_bytes={len(ascii_bytes)}",
-    f"non_ascii_replacements={len(changes)}",
+    f"replacements={len(changes)}",
 ]
 audit_lines.extend(changes)
 audit_path.write_text("\n".join(audit_lines) + "\n", encoding="ascii")
 
 print(f"ASCII_SCRIPT={out_path}")
 print(f"ASCII_AUDIT={audit_path}")
-print(f"NON_ASCII_REPLACEMENTS={len(changes)}")
+print(f"SOURCE_BYTES={len(raw)}")
+print(f"ASCII_BYTES={len(ascii_bytes)}")
+print(f"REPLACEMENTS={len(changes)}")
 PY
 
-if [[ ! -s "$ascii_script" ]]; then
-    echo "ERROR: strict ASCII MATLAB copy was not created."
-    exit 1
-fi
+cat > "$preflight_script" <<'MATLAB'
+fprintf('MATLAB_ASCII_PREFLIGHT_OK\n');
+fprintf('MATLAB_VERSION=%s\n', version);
+MATLAB
 
-if LC_ALL=C grep -n '[^ -~	]' "$ascii_script" >/dev/null 2>&1; then
-    echo "ERROR: non-ASCII bytes remain in $ascii_script"
-    exit 1
+preflight_escaped="${preflight_script//\'/\'\'}"
+
+set +e
+"$MATLAB_BIN" -batch \
+    "try; run('$preflight_escaped'); catch ME; disp(getReport(ME,'extended','hyperlinks','off')); exit(1); end; exit(0);"
+preflight_status=$?
+set -e
+
+if [[ "$preflight_status" -ne 0 ]]; then
+    echo "ERROR: MATLAB cannot run the minimal strict-ASCII preflight script."
+    echo "Preflight: $preflight_script"
+    exit "$preflight_status"
 fi
 
 matlab_script_escaped="${ascii_script//\'/\'\'}"
@@ -174,7 +189,6 @@ matlab_status=${PIPESTATUS[0]}
 set -e
 
 if [[ "$matlab_status" -ne 0 ]]; then
-    echo
     echo "ERROR: MATLAB validation or export failed."
     echo "Nothing should be committed. Inspect: $log_file"
     echo "ASCII audit: $ascii_audit"
@@ -200,7 +214,6 @@ done
 echo
 echo "ERP finalization passed all numeric and export checks."
 echo "Inspect both waveform PNG files visually before committing."
-echo
 printf '  %s\n' "${required_outputs[@]}"
 echo
 git -C "$REPO_ROOT" status --short
