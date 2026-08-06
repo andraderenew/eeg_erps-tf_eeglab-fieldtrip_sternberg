@@ -33,8 +33,7 @@ Probe contrasts are secondary task-phase comparisons.
 
 - Positive cluster, 440–552 ms, 50 channels, corrected p = 0.015869.
 - Negative cluster, 632–760 ms, 66 channels, corrected p = 0.000366.
-
-![Grand-average ERP at Oz](results/figures/stern_grand_average_erp_OZ_final.png)
+- Detailed results: [`stern_erp_cluster_results_final.tsv`](results/tables/stern_erp_cluster_results_final.tsv).
 
 ## Primary time-frequency: Memorize − Ignore
 
