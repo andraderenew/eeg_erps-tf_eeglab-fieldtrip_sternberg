@@ -8,12 +8,13 @@ authors:
     orcid: "https://orcid.org/0000-0001-5627-579X"
 abstract: >-
   Reproducible group-level analysis of the 13-subject EEGLAB STERN tutorial
-  study, including ERP and time-frequency estimation, quality control, and
-  paired cluster-based permutation statistics.
+  study, including ERP and time-frequency estimation, quality control, paired
+  cluster-based permutation statistics, and auditable final visualizations
+  rendered from validated numerical tables.
 license: "MIT"
 repository-code: "https://github.com/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg"
 url: "https://github.com/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg"
-version: "1.0.1"
+version: "1.0.2"
 date-released: "2026-08-08"
 keywords:
   - "EEG"
