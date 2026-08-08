@@ -98,7 +98,7 @@ the material reviewed.
 
 ## Citation
 
-Please cite the latest tagged release using [`CITATION.cff`](CITATION.cff).
-The archived `v1.0.0` release remains available at
+Please cite the latest tagged GitHub release using [`CITATION.cff`](CITATION.cff).
+The archived Zenodo `v1.0.0` record remains available at
 [10.5281/zenodo.21826210](https://doi.org/10.5281/zenodo.21826210).
-The Zenodo DOI for `v1.0.1` will be added after Zenodo processes the maintenance release.
+A newer version-specific Zenodo DOI is not stated here until it has been independently confirmed from Zenodo.
