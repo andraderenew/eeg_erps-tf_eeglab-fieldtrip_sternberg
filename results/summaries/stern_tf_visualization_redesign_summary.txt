@@ -1,0 +1,6 @@
+STERN TF VISUALIZATION REDESIGN EXPORT
+No TFR or permutation statistics were recomputed.
+Primary peak: CP3, 8 Hz, 0.40 s expected from validated inputs.
+Topographies are exact peak-bin snapshots, not bounding-box averages.
+Sensor-average tables are descriptive only and carry no inferential mask.
+Subject cluster means are post-selection descriptive summaries, not independent tests.
