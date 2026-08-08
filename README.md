@@ -37,11 +37,18 @@ Probe contrasts are secondary task-phase comparisons.
 
 ![Grand-average ERP at Oz](results/figures/stern_grand_average_erp_OZ_final.png)
 
+![Representative paired ERP waveforms](results/figures/stern_erp_cluster_representative_waveforms_final.png)
+
 ## Primary time-frequency: Memorize − Ignore
 
 - Negative cluster, 4–26 Hz and 0.00–1.40 s, 69 channels, corrected p = 0.000610.
+- The final summary uses a representative channel selected at the exact corrected-cluster peak (CP3, 8 Hz, 0.40 s), the channel-specific cluster mask, and a spatial snapshot at that exact time-frequency bin.
+- The subject-level panel is explicitly descriptive and post-selection; it is not presented as an independent inferential test.
 
-![Primary time-frequency contrast](results/figures/stern_tf_Memorize_minus_Ignore_sensor_average.png)
+![Primary time-frequency effect](results/figures/stern_tf_Memorize_minus_Ignore_primary_summary_final.png)
+
+Additional descriptive and QC summaries are available in
+[`stern_tf_Memorize_minus_Ignore_qc_summary_final.png`](results/figures/stern_tf_Memorize_minus_Ignore_qc_summary_final.png).
 
 ## Secondary task-phase contrasts
 
@@ -53,21 +60,25 @@ Probe contrasts are secondary task-phase comparisons.
 
 - Negative cluster, 6–30 Hz and 0.00–1.40 s, 69 channels, corrected p < 0.000122.
 
-These secondary effects should not be interpreted as pure encoding effects.
+The final secondary figure uses exact peak snapshots and channel-specific corrected-cluster masks with common symmetric scales across the two contrasts. These secondary effects should not be interpreted as pure encoding effects.
+
+![Secondary task-phase TF effects](results/figures/stern_tf_secondary_phase_summary_final.png)
 
 ## Quality control
 
 - ERP array: `3 × 13 × 69 × 151`, with no non-finite values.
 - Time-frequency array: `3 × 13 × 69 × 14 × 50`, with no non-finite values.
 - Six statistical result structures passed final validation.
-- Primary TF robustness was examined by subject and leave-one-subject-out QC.
+- Primary TF robustness was examined descriptively by subject, band, and time window.
 - Final ERP waveform tables are validated in MATLAB and rendered from TSV with Matplotlib.
+- Final TF visualization tables are exported from the validated MAT/statistical structures in MATLAB and rendered from TSV with Matplotlib.
+- TF statistical masks are kept separate from descriptive sensor averages; final inferential figures use channel-specific masks and exact peak-bin spatial snapshots rather than bounding-box averages.
 
 ## Repository structure
 
 ```text
 scripts/                 final portable MATLAB/Python scripts
-results/figures/         final PNG figures
+results/figures/         final PNG figures and QC summaries
 results/tables/          compact TSV tables
 results/summaries/       validation summaries
 reports/report.md        scientific report
@@ -79,7 +90,9 @@ env/TOOL_VERSIONS.md     validated environment
 
 The tutorial dataset contains 13 participants. Cluster inference applies to
 connected sample sets, not each sample independently. Probe contrasts combine
-task phase and event type. Behavioral covariates were not modeled. Raw EEG is
+task phase and event type. Behavioral covariates were not modeled. Subject-level
+cluster summaries extracted from a cluster selected on the same sample are
+reported descriptively rather than as independent confirmation. Raw EEG is
 excluded because no clear standalone redistribution license was identified in
 the material reviewed.
 

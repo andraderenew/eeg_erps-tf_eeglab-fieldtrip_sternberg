@@ -1,0 +1,4 @@
+contrast	contrast_pretty	cluster_sign	cluster_p	cluster_p_display	peak_channel	peak_frequency_hz	peak_time_s	peak_t	cluster_cft_samples	active_channels	ft_any_channel_fill_percent
+Memorize_minus_Ignore	Memorize - Ignore	negative	0.0006103515625	0.000610	CP3	8	0.4	-7.62106100852521	6835	69	44.0476190476191
+Probe_minus_Memorize	Probe - Memorize	negative	0	<0.000122	CP4	10	0.64	-14.1747431014151	15645	69	67.6587301587302
+Probe_minus_Ignore	Probe - Ignore	negative	0	<0.000122	TP7	10	0.48	-13.63522279864	16160	69	70.4365079365079
