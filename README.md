@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/github/license/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg?include_prereleases)](https://github.com/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg/releases)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21826210.svg)](https://doi.org/10.5281/zenodo.21826210)
+[![Zenodo v1.0.0 DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21826210.svg)](https://doi.org/10.5281/zenodo.21826210)
 ![Last commit](https://img.shields.io/github/last-commit/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg)
 [![ORCID](https://img.shields.io/badge/ORCID-0000--0001--5627--579X-A6CE39)](https://orcid.org/0000-0001-5627-579X)
 
@@ -85,6 +85,7 @@ the material reviewed.
 
 ## Citation
 
-Please cite the completed `v1.0.0` release using
-[10.5281/zenodo.21826210](https://doi.org/10.5281/zenodo.21826210). See
-[`CITATION.cff`](CITATION.cff) for machine-readable citation metadata.
+Please cite the latest tagged release using [`CITATION.cff`](CITATION.cff).
+The archived `v1.0.0` release remains available at
+[10.5281/zenodo.21826210](https://doi.org/10.5281/zenodo.21826210).
+The Zenodo DOI for `v1.0.1` will be added after Zenodo processes the maintenance release.
