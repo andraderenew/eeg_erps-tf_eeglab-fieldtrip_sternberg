@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 from pathlib import Path
 import os
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import TwoSlopeNorm
 from matplotlib.patches import Circle, Polygon, Arc
-from scipy.interpolate import griddata
+from scipy.interpolate import Rbf
 
 results = Path(os.environ['STERN_RESULTS_DIR'])
 table_dir = results / 'tables'
@@ -44,7 +45,6 @@ def symmetric_limit(values):
 def scalp_xy(df):
     theta = np.deg2rad(df.theta_deg.to_numpy(float))
     radius = df.radius.to_numpy(float)
-    # EEGLAB polar convention: 0 deg right, +90 deg anterior.
     x = radius * np.cos(theta)
     y = radius * np.sin(theta)
     scale = max(np.nanmax(np.sqrt(x * x + y * y)), 1e-9)
@@ -70,23 +70,30 @@ def draw_head(ax):
     ax.axis('off')
 
 
+def smooth_scalp_field(x, y, z):
+    """Smooth display-only interpolation across the circular scalp.
+
+    The electrode values themselves are not changed. The RBF is used only to
+    render the field between electrodes and avoids polygonal nearest-neighbour
+    wedges at the outer scalp boundary.
+    """
+    grid = np.linspace(-1.0, 1.0, 240)
+    gx, gy = np.meshgrid(grid, grid)
+    interpolator = Rbf(x, y, z, function='thin_plate', smooth=0.0)
+    gz = interpolator(gx, gy)
+
+    # Prevent display interpolation from overshooting the observed electrode
+    # range. This affects only the rendered field, not any numerical result.
+    gz = np.clip(gz, np.nanmin(z), np.nanmax(z))
+    gz[gx * gx + gy * gy > 1.0] = np.nan
+    return gx, gy, gz
+
+
 def plot_topography(ax, df, title, limit=None):
     x, y = scalp_xy(df)
     z = df.difference_db_at_peak.to_numpy(float)
     sig = df.in_corrected_cluster_at_peak.astype(bool).to_numpy()
-
-    gx, gy = np.mgrid[-1:1:220j, -1:1:220j]
-    gz = griddata((x, y), z, (gx, gy), method='cubic')
-
-    # Fill only interpolation gaps inside the scalp using nearest-neighbour
-    # values. This avoids the irregular white convex-hull edge while keeping
-    # all original electrode values unchanged.
-    inside = gx * gx + gy * gy <= 1.0
-    missing_inside = inside & ~np.isfinite(gz)
-    if np.any(missing_inside):
-        nearest = griddata((x, y), z, (gx, gy), method='nearest')
-        gz[missing_inside] = nearest[missing_inside]
-    gz[~inside] = np.nan
+    gx, gy, gz = smooth_scalp_field(x, y, z)
 
     lim = symmetric_limit(z) if limit is None else float(limit)
     im = ax.pcolormesh(
@@ -100,27 +107,22 @@ def plot_topography(ax, df, title, limit=None):
 
     n_sig = int(sig.sum())
     n_all = len(sig)
-
-    # Non-members are intentionally quiet. Cluster membership is encoded only
-    # by open circles, unless every channel belongs at the exact peak bin.
     nonsig = ~sig
+
     if np.any(nonsig):
-        ax.scatter(x[nonsig], y[nonsig], s=9, c='0.55', alpha=0.65, zorder=3)
+        ax.scatter(x[nonsig], y[nonsig], s=8, c='0.60', alpha=0.55, zorder=3)
 
     if 0 < n_sig < n_all:
         ax.scatter(
-            x[sig],
-            y[sig],
-            s=46,
+            x[sig], y[sig],
+            s=42,
             facecolors='none',
             edgecolors='black',
-            linewidths=1.25,
+            linewidths=1.15,
             zorder=4,
         )
     elif n_sig == n_all:
-        # Avoid 69 overlapping rings: the annotation communicates the same
-        # information more clearly.
-        ax.scatter(x, y, s=10, c='0.25', alpha=0.70, zorder=3)
+        ax.scatter(x, y, s=8, c='0.30', alpha=0.60, zorder=3)
 
     draw_head(ax)
     ax.set_title(title, fontsize=11, fontweight='bold')
@@ -130,7 +132,7 @@ def plot_topography(ax, df, title, limit=None):
 def plot_rep_tfr(ax, contrast, title=None, limit=None):
     d = rep[rep.contrast == contrast]
     times, freqs, z = matrix_from_long(d, 'difference_db')
-    _, _, m = matrix_from_long(d, 'in_corrected_cluster')
+    _, _, membership = matrix_from_long(d, 'in_corrected_cluster')
     lim = symmetric_limit(z) if limit is None else float(limit)
 
     im = ax.pcolormesh(
@@ -141,13 +143,10 @@ def plot_rep_tfr(ax, contrast, title=None, limit=None):
         cmap='RdBu_r',
         norm=TwoSlopeNorm(vmin=-lim, vcenter=0, vmax=lim),
     )
-
-    # Exact channel-specific corrected-cluster membership. Hatching is drawn
-    # on the discrete statistical grid and is not an interpolated contour.
     ax.contourf(
         times,
         freqs,
-        m.astype(float),
+        membership.astype(float),
         levels=[0.5, 1.5],
         colors='none',
         hatches=['////'],
@@ -155,13 +154,9 @@ def plot_rep_tfr(ax, contrast, title=None, limit=None):
 
     md = meta[meta.contrast == contrast].iloc[0]
     ax.scatter(
-        [md.peak_time_s],
-        [md.peak_frequency_hz],
-        marker='o',
-        s=42,
-        facecolors='white',
-        edgecolors='black',
-        zorder=5,
+        [md.peak_time_s], [md.peak_frequency_hz],
+        marker='o', s=42,
+        facecolors='white', edgecolors='black', zorder=5,
     )
     ax.axvline(0, ls='--', lw=1, color='0.35')
     ax.set_xlabel('Time (s)')
@@ -172,9 +167,11 @@ def plot_rep_tfr(ax, contrast, title=None, limit=None):
     return im
 
 
-# -------- Primary summary --------
+# -------------------------------------------------------------------------
+# Primary inferential/descriptive summary
+# -------------------------------------------------------------------------
 pm = meta[meta.contrast == PRIMARY].iloc[0]
-fig = plt.figure(figsize=(16, 5.4), constrained_layout=True)
+fig = plt.figure(figsize=(16.5, 5.6), constrained_layout=True)
 gs = fig.add_gridspec(1, 3, width_ratios=[1.35, 1.0, 1.0])
 
 ax1 = fig.add_subplot(gs[0, 0])
@@ -185,8 +182,7 @@ im1 = plot_rep_tfr(
 )
 fig.colorbar(im1, ax=ax1, label='Memorize - Ignore (dB)')
 ax1.text(
-    0.01,
-    -0.18,
+    0.01, -0.18,
     'Hatching = exact corrected-cluster membership at this channel',
     transform=ax1.transAxes,
     fontsize=9,
@@ -203,15 +199,8 @@ fig.colorbar(im2, ax=ax2, shrink=.82, label='Memorize - Ignore (dB)')
 if n_sig == n_all:
     membership_note = f'All {n_all} channels belong to the corrected cluster at the exact peak bin'
 else:
-    membership_note = f'Open circles = corrected-cluster channels at the exact peak bin ({n_sig}/{n_all})'
-ax2.text(
-    .5,
-    -.06,
-    membership_note,
-    transform=ax2.transAxes,
-    ha='center',
-    fontsize=8.7,
-)
+    membership_note = f'Open circles = corrected-cluster channels at exact peak ({n_sig}/{n_all})'
+ax2.text(.5, -.06, membership_note, transform=ax2.transAxes, ha='center', fontsize=8.5)
 
 ax3 = fig.add_subplot(gs[0, 2])
 s = subj[subj.contrast == PRIMARY]
@@ -225,11 +214,16 @@ ax3.set_xticks(x)
 ax3.set_xticklabels(s.subject, rotation=45)
 ax3.set_ylabel('Cluster-mean difference (dB)')
 ax3.set_xlabel('Subject')
-ax3.set_title(
-    'C. Descriptive subject-level cluster summary\n(post-selection; not independent inference)',
-    fontsize=10.5,
-    fontweight='bold',
+ax3.set_title('C. Subject-level cluster summary', fontsize=11, fontweight='bold')
+ax3.text(
+    .03, .03,
+    'Descriptive post-selection summary\n(not an independent inferential test)',
+    transform=ax3.transAxes,
+    fontsize=8.5,
+    va='bottom',
+    bbox=dict(boxstyle='round,pad=0.25', facecolor='white', alpha=0.75, edgecolor='0.75'),
 )
+
 fig.suptitle(
     f"STERN primary TF effect: Memorize - Ignore | corrected cluster p = {pm.cluster_p_display}",
     fontsize=15,
@@ -243,40 +237,28 @@ for ext in ('png', 'svg'):
 plt.close(fig)
 
 
-# -------- Primary QC/descriptive summary --------
-fig, axes = plt.subplots(2, 2, figsize=(13, 9), constrained_layout=True)
+# -------------------------------------------------------------------------
+# Primary QC/descriptive summary
+# -------------------------------------------------------------------------
+fig, axes = plt.subplots(2, 2, figsize=(13.5, 9.2), constrained_layout=True)
 
 d = sensor[sensor.contrast == PRIMARY]
 times, freqs, z = matrix_from_long(d, 'sensor_average_difference_db')
 lim = symmetric_limit(z)
 im = axes[0, 0].pcolormesh(
-    times,
-    freqs,
-    z,
-    shading='auto',
-    cmap='RdBu_r',
+    times, freqs, z,
+    shading='auto', cmap='RdBu_r',
     norm=TwoSlopeNorm(vmin=-lim, vcenter=0, vmax=lim),
 )
 axes[0, 0].axvline(0, ls='--', lw=1, color='0.35')
 axes[0, 0].set_xlabel('Time (s)')
 axes[0, 0].set_ylabel('Frequency (Hz)')
-axes[0, 0].set_title(
-    'A. Descriptive sensor-average difference (no inferential overlay)',
-    fontweight='bold',
-)
+axes[0, 0].set_title('A. Sensor-average difference (descriptive; no inferential overlay)', fontweight='bold')
 fig.colorbar(im, ax=axes[0, 0], label='dB')
 
 d = count[count.contrast == PRIMARY]
 times, freqs, z = matrix_from_long(d, 'cluster_member_channel_count')
-im = axes[0, 1].pcolormesh(
-    times,
-    freqs,
-    z,
-    shading='nearest',
-    cmap='viridis',
-    vmin=0,
-    vmax=69,
-)
+im = axes[0, 1].pcolormesh(times, freqs, z, shading='nearest', cmap='viridis', vmin=0, vmax=69)
 axes[0, 1].set_xlabel('Time (s)')
 axes[0, 1].set_ylabel('Frequency (Hz)')
 axes[0, 1].set_title('B. Corrected-cluster membership count (QC)', fontweight='bold')
@@ -286,17 +268,15 @@ bands = ['theta', 'alpha', 'beta']
 windows = ['0-0.3 s', '0.3-0.8 s', '0.8-1.4 s']
 mean = np.full((3, 3), np.nan)
 neg = np.full((3, 3), np.nan)
-for i, b in enumerate(bands):
-    for j, w in enumerate(windows):
-        r = bw[(bw.band == b) & (bw.window == w)].iloc[0]
-        mean[i, j] = r.group_mean_difference_db
-        neg[i, j] = r.subjects_memorize_lt_ignore
+for i, band in enumerate(bands):
+    for j, window in enumerate(windows):
+        row = bw[(bw.band == band) & (bw.window == window)].iloc[0]
+        mean[i, j] = row.group_mean_difference_db
+        neg[i, j] = row.subjects_memorize_lt_ignore
 
 lim = symmetric_limit(mean)
 im = axes[1, 0].imshow(
-    mean,
-    aspect='auto',
-    cmap='RdBu_r',
+    mean, aspect='auto', cmap='RdBu_r',
     norm=TwoSlopeNorm(vmin=-lim, vcenter=0, vmax=lim),
 )
 axes[1, 0].set_xticks(range(3), windows)
@@ -325,16 +305,15 @@ for ext in ('png', 'svg'):
 plt.close(fig)
 
 
-# -------- Secondary summary --------
-# Use common symmetric scales across the two secondary contrasts so visual
-# magnitude comparisons are not driven by independent autoscaling.
+# -------------------------------------------------------------------------
+# Secondary summary: use common symmetric scales across contrasts
+# -------------------------------------------------------------------------
 secondary_rep_limit = 0.0
 secondary_topo_limit = 0.0
 for contrast in SECONDARY:
     d = rep[rep.contrast == contrast]
     _, _, z = matrix_from_long(d, 'difference_db')
     secondary_rep_limit = max(secondary_rep_limit, symmetric_limit(z))
-
     dtop = topo[topo.contrast == contrast]
     secondary_topo_limit = max(
         secondary_topo_limit,
@@ -365,15 +344,8 @@ for row, contrast in enumerate(SECONDARY):
     if n_sig == n_all:
         membership_note = f'All {n_all} channels belong to the corrected cluster at the exact peak bin'
     else:
-        membership_note = f'Corrected-cluster channels at exact peak bin: {n_sig}/{n_all}'
-    axes[row, 1].text(
-        .5,
-        -.06,
-        membership_note,
-        transform=axes[row, 1].transAxes,
-        ha='center',
-        fontsize=8.5,
-    )
+        membership_note = f'Corrected-cluster channels at exact peak: {n_sig}/{n_all}'
+    axes[row, 1].text(.5, -.06, membership_note, transform=axes[row, 1].transAxes, ha='center', fontsize=8.5)
 
 fig.suptitle(
     'STERN secondary task-phase TF effects: exact peak snapshots and channel-specific masks',
@@ -394,7 +366,7 @@ for name in [
     'stern_tf_Memorize_minus_Ignore_qc_summary_final.png',
     'stern_tf_secondary_phase_summary_final.png',
 ]:
-    p = figure_dir / name
-    if not p.is_file() or p.stat().st_size < 10000:
-        raise RuntimeError(f'Output missing or too small: {p}')
-    print(f'OUTPUT={p}')
+    path = figure_dir / name
+    if not path.is_file() or path.stat().st_size < 10000:
+        raise RuntimeError(f'Output missing or too small: {path}')
+    print(f'OUTPUT={path}')
