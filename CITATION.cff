@@ -13,9 +13,8 @@ abstract: >-
 license: "MIT"
 repository-code: "https://github.com/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg"
 url: "https://github.com/andraderenew/eeg_erps-tf_eeglab-fieldtrip_sternberg"
-version: "1.0.0"
-date-released: "2026-08-06"
-doi: "10.5281/zenodo.21826210"
+version: "1.0.1"
+date-released: "2026-08-08"
 keywords:
   - "EEG"
   - "EEGLAB"
