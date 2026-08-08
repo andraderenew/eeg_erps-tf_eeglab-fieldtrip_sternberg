@@ -35,6 +35,8 @@ Probe contrasts are secondary task-phase comparisons.
 - Negative cluster, 632–760 ms, 66 channels, corrected p = 0.000366.
 - Detailed results: [`stern_erp_cluster_results_final.tsv`](results/tables/stern_erp_cluster_results_final.tsv).
 
+![Grand-average ERP at Oz](results/figures/stern_grand_average_erp_OZ_final.png)
+
 ## Primary time-frequency: Memorize − Ignore
 
 - Negative cluster, 4–26 Hz and 0.00–1.40 s, 69 channels, corrected p = 0.000610.
@@ -59,11 +61,12 @@ These secondary effects should not be interpreted as pure encoding effects.
 - Time-frequency array: `3 × 13 × 69 × 14 × 50`, with no non-finite values.
 - Six statistical result structures passed final validation.
 - Primary TF robustness was examined by subject and leave-one-subject-out QC.
+- Final ERP waveform tables are validated in MATLAB and rendered from TSV with Matplotlib.
 
 ## Repository structure
 
 ```text
-scripts/                 final portable MATLAB scripts
+scripts/                 final portable MATLAB/Python scripts
 results/figures/         final PNG figures
 results/tables/          compact TSV tables
 results/summaries/       validation summaries

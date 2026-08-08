@@ -4,22 +4,24 @@ Conditions: Ignore, Memorize, Probe
 Scalp EEG channels: 69
 ERP array: [3 13 69 151]
 Non-finite values: 0
+Direct Oz table maximum difference: 4.76837158025e-06 uV
+Direct Oz TSV round-trip tolerance: 1e-05 uV
+Maximum absolute subject baseline residual: 0.000000032 uV
+Maximum absolute subject-level Oz amplitude: 9.795788765 uV
+Maximum absolute Oz grand mean: 2.124922784 uV
+Maximum adjacent grand-mean change: 0.926465252 uV
 Exact within-subject permutations: 8192
 Minimum reportable non-zero exact probability: 0.000122070
 Additional conservative alpha across 3 contrasts: 0.016666667
 
-Figure repair:
-Transparent uncertainty patches were removed because the headless MATLAB renderer obscured the mean traces in exported PNG files.
-Final waveform figures show solid grand means and dashed SEM boundaries without transparent patches.
+Final waveform rendering:
+MATLAB validates the ERP arrays and exports complete TSV waveform tables. Final PNG and SVG figures are rendered from those tables by render_stern_erp_figures.py using Matplotlib.
+No final ERP waveform figure is rendered by MATLAB.
 
-Interpretation constraint from the event audit:
-Memorize and Ignore epochs contain letter events at 0 ms and form the primary event-matched contrast.
-Probe epochs contain r-prefixed probe events at 0 ms followed by response/correctness markers, so Probe comparisons represent broader task-phase differences rather than a specific encoding-condition effect.
-
-Primary event-matched contrast after conservative across-contrast threshold:
+Primary event-matched contrast:
 Memorize - Ignore: positive cluster 440-552 ms, p=0.015869; negative cluster 632-760 ms, p=0.000366.
 
 Final outputs:
-Oz waveform: <STERN_PROJECT>/results/figures/stern_grand_average_erp_OZ_final.png
-Representative waveforms: <STERN_PROJECT>/results/figures/stern_erp_cluster_representative_waveforms_final.png
-Cluster table: <STERN_PROJECT>/results/tables/stern_erp_cluster_results_final.tsv
+Oz grand-average table: /media/andraderenew/Elements/neuroimaging/eeg_erps-tf_eeglab-fieldtrip_sternberg/results/tables/stern_OZ_grand_average_erp_final.tsv
+Representative waveform table: /media/andraderenew/Elements/neuroimaging/eeg_erps-tf_eeglab-fieldtrip_sternberg/results/tables/stern_erp_representative_waveforms_final.tsv
+Cluster table: /media/andraderenew/Elements/neuroimaging/eeg_erps-tf_eeglab-fieldtrip_sternberg/results/tables/stern_erp_cluster_results_final.tsv
